@@ -1,3 +1,4 @@
+import { useEffect } from "react"; // 👈 Added useEffect
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +12,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { CompareProvider } from "@/contexts/CompareContext";
 import { ShieldCheck, Loader2 } from "lucide-react"; 
+import { SplashScreen } from '@capacitor/splash-screen'; // 👈 Added Capacitor Splash Screen
 
 import ScrollToTop from "@/components/ScrollToTop";
 import PageTransition from "@/components/PageTransition";
@@ -34,7 +36,6 @@ import TrackOrderPage from "./pages/TrackOrderPage";
 import MepcoBill from "./pages/MepcoBill";
 import HelpCenter from "./pages/HelpCenter";
 import SSOCallback from "./pages/SSOCallback"; 
-// 👇 YAHAN MAINE IMPORT ADD KIYA HAI (Path check kar lena agar different folder mein ho)
 import WelcomeBackPage from "./pages/WelcomeBackPage"; 
 
 // Admin
@@ -51,7 +52,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 const PUBLISHABLE_KEY = "pk_test_cHJvbXB0LXR1cmtleS03Ni5jbGVyay5hY2NvdW50cy5kZXYk"; 
 
-// --- Protected Route (Modified: Sirf Auth Check karega, Onboarding nahi) ---
+// --- Protected Route ---
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isSignedIn, isLoaded } = useClerkAuth();
   const location = useLocation();
@@ -118,8 +119,6 @@ const MainContent = () => {
             <Route path="/mepco-bill" element={<MepcoBill />} />
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/sso-callback" element={<SSOCallback />} />
-            
-            {/* 👇 YAHAN ROUTE ADD KIYA HAI. URL /welcome-back hoga */}
             <Route path="/welcome-back" element={<WelcomeBackPage />} />
 
             {/* Auth Routes */}
@@ -128,46 +127,14 @@ const MainContent = () => {
             <Route path="/auth" element={<Navigate to="/auth/sign-in" replace />} />
             
             {/* Protected User Routes */}
-            <Route path="/cart" element={
-              <ProtectedRoute>
-                <CartPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/wishlist" element={
-              <ProtectedRoute>
-                <WishlistPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/checkout" element={
-              <ProtectedRoute>
-                <CheckoutPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/confirmation" element={
-              <ProtectedRoute>
-                <ConfirmationPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            } />
-            <Route path="/orders" element={
-              <ProtectedRoute>
-                <OrdersPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/orders/:id" element={
-              <ProtectedRoute>
-                <OrderDetailPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/track-order" element={
-              <ProtectedRoute>
-                <TrackOrderPage />
-              </ProtectedRoute>
-            } />
+            <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+            <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
+            <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
+            <Route path="/confirmation" element={<ProtectedRoute><ConfirmationPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
+            <Route path="/orders/:id" element={<ProtectedRoute><OrderDetailPage /></ProtectedRoute>} />
+            <Route path="/track-order" element={<ProtectedRoute><TrackOrderPage /></ProtectedRoute>} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
@@ -204,32 +171,47 @@ const MainContent = () => {
   );
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <ClerkRouterBridge>
-        <ThemeProvider>
-          <AuthProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <CompareProvider>
-                  <TooltipProvider>
-                    <Toaster />
-                    <Sonner />
-                    <ReactLenis root options={{ lerp: 0.1, duration: 1.2, smoothWheel: true }}>
-                      <ScrollToTop />
-                      <MainContent />
-                    </ReactLenis>
-                  </TooltipProvider>
-                </CompareProvider>
-              </WishlistProvider>
-            </CartProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </ClerkRouterBridge>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+// 👇 App Component Modified to include Splash Screen Logic
+const App = () => {
+  
+  useEffect(() => {
+    const hideSplash = async () => {
+      try {
+        await SplashScreen.hide();
+      } catch (e) {
+        console.log("Splash screen plugin error or not running on native", e);
+      }
+    };
+    
+    hideSplash();
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <ClerkRouterBridge>
+          <ThemeProvider>
+            <AuthProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <CompareProvider>
+                    <TooltipProvider>
+                      <Toaster />
+                      <Sonner />
+                      <ReactLenis root options={{ lerp: 0.1, duration: 1.2, smoothWheel: true }}>
+                        <ScrollToTop />
+                        <MainContent />
+                      </ReactLenis>
+                    </TooltipProvider>
+                  </CompareProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </ClerkRouterBridge>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
-

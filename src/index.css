@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* --- Light Mode (Solid Cream Backgrounds) --- */
+    --background: 40 100% 97%;
+    --foreground: 220 20% 10%;
+    --card: 40 100% 99%;
+    --card-foreground: 220 20% 10%;
+    --popover: 40 100% 99%;
+    --popover-foreground: 220 20% 10%;
+    --primary: 250 95% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 30% 94%;
+    --secondary-foreground: 220 20% 10%;
+    --muted: 40 30% 94%;
+    --muted-foreground: 220 10% 46%;
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 40 20% 90%;
+    --input: 40 20% 90%;
+    --ring: 250 95% 60%;
+    --radius: 1rem;
+
+    /* --- Glass Variables (Light Mode) --- */
+    --glass-bg: 40 100% 98% / 0.85; 
+    --glass-border: 40 20% 90% / 0.5;
+    --glass-blur: 12px;
+  }
+
+  .dark {
+    /* --- Dark Mode (Transparent for Canvas) --- */
+    --background: 0 0% 0%; 
+    --foreground: 0 0% 98%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 250 95% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 220 10% 65%;
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 250 95% 60%;
+
+    /* --- Glass Variables (Dark Mode) --- */
+    --glass-bg: 0 0% 0% / 0.3; 
+    --glass-border: 255 255 255 / 0.1;
+    --glass-blur: 20px;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  /* IMPORTANT: Body Transparent */
+  body {
+    background-color: transparent !important;
+    @apply text-foreground antialiased;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+  }
+  
+  #root {
+    background-color: transparent !important;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+@layer components {
+  /* Unified Glass Panel */
+  .glass-panel {
+    background-color: hsl(var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid hsl(var(--glass-border));
+    @apply shadow-xl rounded-3xl;
+  }
+
+  /* FIXED BUTTON CLASS (Error Fixed Here) */
+  .btn-primary {
+    /* `via-violet-600` removed, using Hex [#7c3aed] instead */
+    @apply bg-gradient-to-r from-primary via-[#7c3aed] to-primary text-primary-foreground font-semibold px-6 py-3 rounded-2xl transition-all duration-300;
+    @apply hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98];
+    background-size: 200% auto;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  
+  /* Input Style */
+  .input-field {
+    @apply w-full px-5 py-4 rounded-2xl bg-muted/50 border border-border/50;
+    @apply focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: hsl(var(--glass-bg));
+  }
+}
+
+
